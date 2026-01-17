@@ -42,12 +42,14 @@ const Navbar = () => {
                             <Search size={18} className="text-slate-600" />
                             <input className="w-full bg-transparent outline-none placeholder-slate-600" type="text" placeholder="Search products" value={search} onChange={(e) => setSearch(e.target.value)} required />
                         </form>
-
+                        {
+                            user && (
                         <Link href="/cart" className="relative flex items-center gap-2 text-slate-600">
                             <ShoppingCart size={18} />
                             Cart
                             <button className="absolute -top-1 left-3 text-[8px] text-white bg-slate-600 size-3.5 rounded-full">{cartCount}</button>
                         </Link>
+                            )}
                         {
                             !user?(
                         <button onClick={openSignIn} className="px-8 py-2 bg-indigo-500 hover:bg-indigo-600 transition text-white rounded-full">
@@ -67,12 +69,16 @@ const Navbar = () => {
 
                     {/* Mobile User Button  */}
                     <div className="sm:hidden flex items-center gap-4">
-                        <Link href="/cart" className="sm:hidden relative">
-                            <ShoppingCart size={22} />Cart
-                            <span className="absolute -top-1 -right-1 text-[8px] bg-slate-600 text-white size-4 rounded-full flex items-center justify-center">
-                            {cartCount}</span>
-                        </Link>
-
+                         {user ? (
+                             <Link href="/cart" className="relative">
+                               <ShoppingCart size={22} />
+           <span className="absolute -top-1 -right-1 text-[8px] bg-slate-600 text-white size-4 rounded-full flex items-center justify-center">
+        {cartCount}
+      </span>
+    </Link>
+  ) : (
+    <div className="w-[22px] h-[22px]" />   // 👈 space holder
+  )}
                     {
                         user?(
                              <div>
