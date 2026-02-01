@@ -1,15 +1,17 @@
 'use client'
-import { dummyStoreDashboardData } from "@/assets/assets"
+
 import Loading from "@/components/Loading"
+import { useAuth } from "@clerk/nextjs"
+import axios from "axios"
 import { CircleDollarSignIcon, ShoppingBasketIcon, StarIcon, TagsIcon } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import toast from "react-hot-toast"
 
 export default function Dashboard() {
-
+    const {getToken}=useAuth()
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
-
     const router = useRouter()
 
     const [loading, setLoading] = useState(true)
@@ -28,7 +30,13 @@ export default function Dashboard() {
     ]
 
     const fetchDashboardData = async () => {
-        setDashboardData(dummyStoreDashboardData)
+        try {
+            const token=await getToken();
+            const {data}=await axios.get("/api/store/dashboard",{headers:{Authorization:`Bearer ${token}`}});
+            setDashboardData(data.dashboardData)
+        } catch (error) {
+            toast.error(error?.response?.data?.error || error.message)
+        }
         setLoading(false)
     }
 
@@ -64,9 +72,9 @@ export default function Dashboard() {
                         <div key={index} className="flex max-sm:flex-col gap-5 sm:items-center justify-between py-6 border-b border-slate-200 text-sm text-slate-600 max-w-4xl">
                             <div>
                                 <div className="flex gap-3">
-                                    <Image src={review.user.image} alt="" className="w-10 aspect-square rounded-full" width={100} height={100} />
+                                    <Image src={review?.user?.image} alt="" className="w-10 aspect-square rounded-full" width={100} height={100} />
                                     <div>
-                                        <p className="font-medium">{review.user.name}</p>
+                                        <p className="font-medium">{review.user?.name}</p>
                                         <p className="font-light text-slate-500">{new Date(review.createdAt).toDateString()}</p>
                                     </div>
                                 </div>

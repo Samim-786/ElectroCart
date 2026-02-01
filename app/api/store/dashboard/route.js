@@ -1,5 +1,3 @@
-
-
 //get Dashboard Data for seller (total products,total earnings,total orderes)
 
 import prisma from "@/lib/prisma";
@@ -21,9 +19,14 @@ export async function GET(req) {
         let ratings = [];
         if (products.length > 0) {
             ratings = await prisma.rating.findMany({
-                where: { productId: { in: products.map(p => p.id) } }
+                where: { productId: { in: products.map(p => p.id) } },
+                include: {
+                    user: true,      // Include user data
+                    product: true    // Include product data
+                }
             });
         }
+        
         const dashboardData = {
             ratings,
             totalOrders: orders.length,

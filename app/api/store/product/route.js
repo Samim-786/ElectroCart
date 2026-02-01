@@ -96,7 +96,7 @@ export async function GET(request){
     if (!storeId)
       return NextResponse.json({ error: "Not authorized" }, { status: 401 });
     const products=await prisma.product.findMany({
-        whrere:{storeId}
+        where:{storeId}
     })
     return NextResponse.json({products});
 
